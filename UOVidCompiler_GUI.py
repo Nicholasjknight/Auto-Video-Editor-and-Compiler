@@ -42,8 +42,8 @@ except ImportError:
 
 class UOVidCompilerGUI:
     # Version info for auto-updates
-    VERSION = "1.1.4"  # Update this when releasing new versions
-    GITHUB_REPO = "Real-NKnight/B-Magic-s-Auto-Vid-Compiler"  # GitHub repo for auto-updates
+    VERSION = "1.2.0"  # Update this when releasing new versions
+    GITHUB_REPO = "Nicholasjknight/Auto-Video-Editor-Compiler"  # GitHub repo for auto-updates
     
     # Donation addresses
     DONATION_INFO = {
