@@ -4,7 +4,7 @@ This is an application that works best using the "Record That" function to captu
 ## Downloads
 - Official builds are published on GitHub Releases. Go to the Releases page and download the latest `.zip` bundle. It includes the app `.exe`, `ffmpeg`, `icons`, `Intros`, and `Music` folders.
 - Direct-download format (replace with your tag):
-	- https://github.com/Nicholasjknight/Auto-Video-Editor-Compiler/releases/download/<TAG>/Auto-Video-Editor-Compiler_<TAG>.zip
+	- https://github.com/Nicholasjknight/Auto-Video-Editor-and-Compiler/releases/download/<TAG>/Auto-Video-Editor-Compiler_<TAG>.zip
 
 ## Quick Start (Standalone)
 - Unzip the release anywhere (e.g., `C:\Apps\Auto-Video-Editor-Compiler`).

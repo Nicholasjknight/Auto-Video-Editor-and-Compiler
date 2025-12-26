@@ -46,7 +46,7 @@ class UOVidCompilerGUI:
     
     # Version info for auto-updates
     VERSION = "1.2.0"  # Updated for tabbed interface
-    GITHUB_REPO = "Nicholasjknight/Auto-Video-Editor-Compiler"
+    GITHUB_REPO = "Nicholasjknight/Auto-Video-Editor-and-Compiler"
     
     # Donation addresses
     DONATION_INFO = {

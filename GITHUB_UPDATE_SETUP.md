@@ -17,7 +17,7 @@ Your application now has automatic update checking! When users launch the app, i
 
 Open `UOVidCompiler_GUI.py` and change line ~41:
 ```python
-GITHUB_REPO = "Nicholasjknight/Auto-Video-Editor-Compiler"
+GITHUB_REPO = "Nicholasjknight/Auto-Video-Editor-and-Compiler"
 ```
 Replace `YourGitHubUsername` with your actual GitHub username.
 
@@ -155,7 +155,7 @@ Examples:
 ## Distribution
 
 Just share the GitHub Releases page URL:
-`https://github.com/Nicholasjknight/Auto-Video-Editor-Compiler/releases/latest`
+`https://github.com/Nicholasjknight/Auto-Video-Editor-and-Compiler/releases/latest`
 
 Users download the .exe once, then auto-updates forever!
 
