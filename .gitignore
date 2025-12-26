@@ -1,0 +1,49 @@
+# Build outputs and executables (too large for GitHub, only upload to Releases)
+*.exe
+*.pkg
+dist/
+build/
+__pycache__/
+*.pyc
+
+# Large FFmpeg binaries (bundle with releases, not in repo)
+ffmpeg/ffmpeg.exe
+ffmpeg/ffprobe.exe
+BMagic_AutoVidCompiler_STANDALONE_Distribution/ffmpeg/
+
+# User-generated files
+logs/
+*.log
+gui_config.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Vendorized libraries and binaries
+python-libs/
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+.env
+.env.*
+
+# Editor/IDE settings
+.vscode/
+.idea/
+
+# Test & analysis caches
+.cache/
+.pytest_cache/
+.mypy_cache/
+.coverage*
+htmlcov/
+
+# Packaging metadata
+.eggs/
+*.egg-info/
+pip-wheel-metadata/
+localpycs/
