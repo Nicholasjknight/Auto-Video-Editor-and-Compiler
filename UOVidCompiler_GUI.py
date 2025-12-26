@@ -89,7 +89,7 @@ class UOVidCompilerGUI:
         # Load button icons
         self.load_button_icons()
         
-        self.root.title("B-Magic's Auto Vid Compiler - Control Panel")
+        self.root.title("Auto Video Editor & Compiler - Control Panel")
         self.root.geometry("950x800")  # Slightly larger for better header visibility
         self.root.minsize(900, 750)    # Larger minimum size to prevent layout issues
         self.root.resizable(True, True)
@@ -114,7 +114,7 @@ class UOVidCompilerGUI:
     def set_taskbar_icon(self):
         """Set taskbar icon immediately upon window creation - CRITICAL for Windows taskbar display"""
         try:
-            ico_path = os.path.join(os.path.dirname(__file__), "icons", "UOVidCompiler.ico")
+            ico_path = os.path.join(os.path.dirname(__file__), "icons", "image.ico")
             if os.path.exists(ico_path):
                 # IMMEDIATE icon setting before window appears
                 self.root.iconbitmap(ico_path)
@@ -156,16 +156,16 @@ class UOVidCompilerGUI:
     def load_png_logo(self):
         """Load PNG logo for GUI display - called early in initialization"""
         try:
-            logo_path = os.path.join(os.path.dirname(__file__), "icons", "B-Magic's Auto Vid Compiler.png")
+            logo_path = os.path.join(os.path.dirname(__file__), "icons", "KnightLogicsVidCompiler_transparent.png")
             
             if os.path.exists(logo_path):
-                # Load and resize logo for display in GUI (100x100 pixels)
+                # Load and resize logo for display in GUI (150x150 pixels)
                 logo_image = Image.open(logo_path)
-                self.logo_large = logo_image.resize((100, 100), Image.Resampling.LANCZOS)
+                self.logo_large = logo_image.resize((150, 150), Image.Resampling.LANCZOS)
                 self.logo_large_tk = ImageTk.PhotoImage(self.logo_large)
                 
                 # Create small version for any internal use
-                self.icon_small = logo_image.resize((32, 32), Image.Resampling.LANCZOS)
+                self.icon_small = logo_image.resize((48, 48), Image.Resampling.LANCZOS)
                 self.icon_tk = ImageTk.PhotoImage(self.icon_small)
                 
                 # Set flags for successful logo loading
@@ -218,7 +218,7 @@ class UOVidCompilerGUI:
         """Setup application icon from ICO file for proper Windows taskbar integration"""
         try:
             # Only handle ICO file for taskbar (PNG already loaded separately)
-            ico_path = os.path.join(os.path.dirname(__file__), "icons", "UOVidCompiler.ico")
+            ico_path = os.path.join(os.path.dirname(__file__), "icons", "image.ico")
             
             # Set ICO file for taskbar (primary method for Windows)
             if os.path.exists(ico_path):
@@ -354,88 +354,71 @@ class UOVidCompilerGUI:
         self.create_status_section(main_frame)
         
     def create_header(self, parent):
-        """Create header with logo and title - IMPROVED layout for better visibility"""
-        # Main header frame with fixed height to prevent layout issues
+        """Create professional header with logo, title, and support section"""
+        # Main header frame with fixed height
         header_frame = ttk.Frame(parent, style='Header.TFrame')
         header_frame.pack(fill='x', pady=(0, 20), padx=10)
         
         # Configure header frame to maintain consistent height
         header_frame.pack_propagate(False)
-        header_frame.configure(height=120)  # Fixed height to prevent cutting off
+        header_frame.configure(height=140)
         
-        # Left side: Logo container
+        # Left side: Logo container (centered vertically)
         logo_frame = ttk.Frame(header_frame, style='Header.TFrame')
-        logo_frame.pack(side='left', padx=(0, 15))
+        logo_frame.pack(side='left', padx=(0, 20), anchor='center')
         
         # Logo (if available) - with error handling
         logo_displayed = False
-        print(f"[SEARCH] Header creation - checking logo availability:")
-        print(f"   has_logo_tk: {getattr(self, 'has_logo_tk', False)}")
-        print(f"   has logo_large_tk attribute: {hasattr(self, 'logo_large_tk')}")
-        
         if hasattr(self, 'has_logo_tk') and self.has_logo_tk and hasattr(self, 'logo_large_tk'):
             try:
                 logo_label = ttk.Label(logo_frame, image=self.logo_large_tk, background=self.colors['bg'])
-                logo_label.pack(pady=10)
+                logo_label.pack(anchor='center')
                 logo_displayed = True
                 print("[OK] Header logo displayed successfully from PNG file")
             except Exception as e:
                 print(f"[WARN] Error displaying header logo: {e}")
-        else:
-            print(f"[WARN] Logo not available for header display")
         
         if not logo_displayed:
             # Fallback: Create text logo if image fails
             fallback_logo = ttk.Label(logo_frame, text="VIDEO", font=('Arial', 32), 
                                     background=self.colors['bg'], foreground=self.colors['accent'])
-            fallback_logo.pack(pady=10)
+            fallback_logo.pack()
             print("[PACKAGE] Using fallback text logo")
         
-        # Middle: Title section with proper spacing
+        # Center: Title section - vertically centered
         title_frame = ttk.Frame(header_frame, style='Header.TFrame')
-        title_frame.pack(side='left', fill='both', expand=True, padx=(10, 10))
+        title_frame.pack(side='left', fill='both', expand=True, padx=(0, 20))
         
-        # Title with proper font sizing
-        title_label = ttk.Label(title_frame, text="B-Magic's Auto Vid Compiler", 
-                              style='Title.TLabel', font=('Segoe UI', 16, 'bold'))
-        title_label.pack(anchor='w', pady=(25, 5))
+        # Create inner frame for vertical centering
+        title_inner = ttk.Frame(title_frame, style='Header.TFrame')
+        title_inner.pack(anchor='center', expand=True)
         
-        # Subtitle with responsive text
-        subtitle_label = ttk.Label(title_frame, 
-                                 text="Professional video compilation tool",
+        # Title
+        title_label = ttk.Label(title_inner, text="Auto Video Editor & Compiler", 
+                              style='Title.TLabel', font=('Segoe UI', 18, 'bold'))
+        title_label.pack(anchor='w')
+        
+        # Subtitle and version on same line
+        info_frame = ttk.Frame(title_inner, style='Header.TFrame')
+        info_frame.pack(anchor='w', pady=(3, 0))
+        
+        subtitle_label = ttk.Label(info_frame, 
+                                 text="Professional video compilation tool  •  v" + str(self.VERSION),
                                  style='Heading.TLabel', font=('Segoe UI', 9))
-        subtitle_label.pack(anchor='w', pady=(0, 2))
+        subtitle_label.pack(anchor='w')
         
-        # Version label
-        version_label = ttk.Label(title_frame, 
-                                 text=f"v{self.VERSION}",
-                                 style='Heading.TLabel', font=('Segoe UI', 8))
-        version_label.pack(anchor='w', pady=(0, 20))
+        # Right side: Support section - vertically centered
+        support_frame = ttk.Frame(header_frame, style='Header.TFrame')
+        support_frame.pack(side='right', anchor='center', padx=(0, 5))
         
-        # Right side: Donation section
-        self.create_donation_section(header_frame)
-        
-    def create_donation_section(self, parent):
-        """Create professional donation section with payment icons"""
-        donation_frame = ttk.Frame(parent, style='Header.TFrame')
-        donation_frame.pack(side='right', padx=(20, 0), pady=10)
-        
-        # Header with gift icon - centered over buttons
-        header_frame = tk.Frame(donation_frame, bg=self.colors['bg'])
-        header_frame.pack(pady=(0, 8))
-        
-        if hasattr(self, 'icons') and 'gift' in self.icons:
-            gift_label = tk.Label(header_frame, image=self.icons['gift'], 
-                                 bg=self.colors['bg'])
-            gift_label.pack(side='left', padx=(0, 5))
-            
-        donate_label = ttk.Label(header_frame, text="Support Development", 
-                               style='Heading.TLabel', font=('Segoe UI', 11, 'bold'))
-        donate_label.pack(side='left')
+        # Support header
+        support_label = ttk.Label(support_frame, text="❤ Support Development", 
+                                style='Heading.TLabel', font=('Segoe UI', 10, 'bold'))
+        support_label.pack()
         
         # Payment buttons frame
-        buttons_frame = ttk.Frame(donation_frame, style='Header.TFrame')
-        buttons_frame.pack()
+        buttons_frame = ttk.Frame(support_frame, style='Header.TFrame')
+        buttons_frame.pack(pady=(5, 0))
         
         # Payment method configurations - now with logo support
         payment_methods = [
@@ -578,14 +561,14 @@ class UOVidCompilerGUI:
         try:
             music_dir = os.path.join(os.path.dirname(__file__), "Music")
             if not os.path.exists(music_dir):
-                return ['[RANDOM] Random']
+                return ['None', '[RANDOM] Random']
             
-            music_files = ['[RANDOM] Random']  # Always provide random option as first choice
+            music_files = ['None', '[RANDOM] Random']  # None option first, then random option
             for file in os.listdir(music_dir):
                 if file.lower().endswith(('.mp3', '.wav', '.m4a', '.flac')):
                     music_files.append(os.path.splitext(file)[0])  # Remove extension for display
             
-            return music_files if len(music_files) > 1 else ['[RANDOM] Random']
+            return music_files if len(music_files) > 2 else ['None', '[RANDOM] Random']
         except Exception:
             return ['[RANDOM] Random']
     
@@ -607,14 +590,14 @@ class UOVidCompilerGUI:
                     else:
                         intro_files.append(filename)
             
-            # Put StockDefault first if it exists, then Random, then alphabetically sorted others
-            result = []
+            # Put None first, then StockDefault if it exists, then Random, then alphabetically sorted others
+            result = ['None']
             if stock_default_found:
                 result.append('StockDefault')
             result.append('[RANDOM] Random')
             result.extend(sorted(intro_files))
             
-            return result if result else ['StockDefault']
+            return result if result else ['None', 'StockDefault']
         except Exception:
             return ['StockDefault']
     
@@ -642,8 +625,8 @@ class UOVidCompilerGUI:
         trim_frame = ttk.Frame(options_container, style='Custom.TFrame')
         trim_frame.grid(row=0, column=0, sticky='ew', padx=(0, 10))
         
-        ttk.Label(trim_frame, text="[TIME] Trim End:", style='Info.TLabel').pack(anchor='w')
-        trim_options = ['5', '10', '15', '20', '25', '30']
+        ttk.Label(trim_frame, text="Seconds Trimmed from End:", style='Info.TLabel').pack(anchor='w')
+        trim_options = ['None', '5', '10', '15', '20', '25', '30']
         self.trim_seconds_var.set('15')  # Default to 15 seconds like S+ working version
         trim_combo = ttk.Combobox(trim_frame, textvariable=self.trim_seconds_var, 
                                 values=trim_options, state='readonly')
@@ -653,11 +636,11 @@ class UOVidCompilerGUI:
         music_frame = ttk.Frame(options_container, style='Custom.TFrame')
         music_frame.grid(row=0, column=1, sticky='ew', padx=5)
 
-        ttk.Label(music_frame, text="[MUSIC] Music:", style='Info.TLabel').pack(anchor='w')
+        ttk.Label(music_frame, text="Background Music:", style='Info.TLabel').pack(anchor='w')
         music_options = self.get_available_music()
-        # Set default to Random if empty
+        # Set default to None if empty
         if not self.music_selection_var.get() and music_options:
-            self.music_selection_var.set(music_options[0])  # '[RANDOM] Random'
+            self.music_selection_var.set(music_options[0])  # 'None'
         self.music_combo = ttk.Combobox(music_frame, textvariable=self.music_selection_var,
                                  values=music_options, state='readonly')
         self.music_combo.pack(fill='x', pady=(2, 0))
@@ -670,9 +653,9 @@ class UOVidCompilerGUI:
 
         ttk.Label(intro_frame, text="Intro:", style='Info.TLabel').pack(anchor='w')
         intro_options = self.get_available_intros()
-        # Set default to StockDefault if empty
+        # Set default to None if empty
         if not self.intro_selection_var.get() and intro_options:
-            self.intro_selection_var.set(intro_options[0])  # 'StockDefault'
+            self.intro_selection_var.set(intro_options[0])  # 'None'
         self.intro_combo = ttk.Combobox(intro_frame, textvariable=self.intro_selection_var,
                                  values=intro_options, state='readonly')
         self.intro_combo.pack(fill='x', pady=(2, 0))
@@ -757,7 +740,7 @@ class UOVidCompilerGUI:
         self.status_text.configure(yscrollcommand=scrollbar.set)
         
         # Enhanced initial status messages - SAFE ASCII VERSION for standalone EXE
-        startup_text = """Welcome to B-Magic's Auto Video Compiler!
+        startup_text = """Welcome to Knight Logics Auto Video Editor & Compiler!
 
 ********* INSTRUCTIONS *********
 
@@ -1209,11 +1192,11 @@ Ready to compile? Configure your settings above and click "Compile Videos"!
             if hasattr(self, 'music_combo'):
                 self.music_combo['values'] = music_options
                 
-                # Restore selection if still valid, otherwise default to Random
+                # Restore selection if still valid, otherwise default to None
                 if current_selection in music_options:
                     self.music_selection_var.set(current_selection)
                 else:
-                    self.music_selection_var.set(music_options[0] if music_options else '[RANDOM] Random')
+                    self.music_selection_var.set(music_options[0] if music_options else 'None')
                 
                 self.log_status(f"[OK] Music list refreshed - {len(music_options)} tracks available")
         except Exception as e:
@@ -1445,7 +1428,7 @@ Ready to compile? Configure your settings above and click "Compile Videos"!
             
             # Set icon for popup window
             try:
-                ico_path = os.path.join(os.path.dirname(__file__), "icons", "UOVidCompiler.ico")
+                ico_path = os.path.join(os.path.dirname(__file__), "icons", "image.ico")
                 if os.path.exists(ico_path):
                     instruction_window.iconbitmap(ico_path)
             except:
@@ -1570,7 +1553,7 @@ To send a donation:
             
             # Set icon for popup window
             try:
-                ico_path = os.path.join(os.path.dirname(__file__), "icons", "UOVidCompiler.ico")
+                ico_path = os.path.join(os.path.dirname(__file__), "icons", "image.ico")
                 if os.path.exists(ico_path):
                     qr_window.iconbitmap(ico_path)
             except:

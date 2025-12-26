@@ -105,9 +105,10 @@ VIDEO_INPUT_PATH = os.environ.get('VIDEO_INPUT_PATH', os.path.expanduser(r"~/Vid
 VIDEO_OUTPUT_PATH = os.environ.get('VIDEO_OUTPUT_PATH', os.path.expanduser(r"~/Downloads"))
 
 # Video configuration options - can be set by GUI
-TRIM_SECONDS = int(os.environ.get('TRIM_SECONDS', '15'))  # Default to 15 seconds like S+ working version
-MUSIC_SELECTION = os.environ.get('MUSIC_SELECTION', '')
-INTRO_SELECTION = os.environ.get('INTRO_SELECTION', '')
+trim_value = os.environ.get('TRIM_SECONDS', '15')
+TRIM_SECONDS = int(trim_value) if trim_value != 'None' else None  # None means use full video length
+MUSIC_SELECTION = os.environ.get('MUSIC_SELECTION', '')  # 'None' means no music
+INTRO_SELECTION = os.environ.get('INTRO_SELECTION', '')  # 'None' means no intro
 # Resolution automatically detected - no GUI option needed for universal compatibility
 
 CONFIG = {
@@ -132,11 +133,11 @@ CONFIG = {
     "output_filename": "BMagic_Compilation.mp4",
     
     # Intro settings
-    "use_intro": True,          # Set to False to disable intro
+    "use_intro": INTRO_SELECTION != 'None' if INTRO_SELECTION else True,  # False if 'None' selected
     "intro_duration": 7.0,      # Maximum duration in seconds (will use full length if shorter)
     
     # Video settings
-    "clip_duration": float(TRIM_SECONDS),  # Last X seconds of each video (configurable via GUI)
+    "clip_duration": float(TRIM_SECONDS) if TRIM_SECONDS else 999999.0,  # Use full length if None selected
     "video_extensions": [".mp4", ".avi", ".mov", ".mkv"],
     "music_extensions": [".mp3", ".wav", ".m4a", ".ogg"],
     
@@ -720,6 +721,10 @@ def validate_and_convert_audio(file_path, temp_dir):
 def create_music_playlist(temp_dir, total_duration):
     """Create a music playlist that covers the entire video duration with random tracks"""
     
+    # Return None if user selected "None" for music
+    if CONFIG.get("music_selection") == "None":
+        return None
+    
     if not os.path.exists(CONFIG["music_folder"]):
         return None
         
@@ -744,7 +749,7 @@ def create_music_playlist(temp_dir, total_duration):
     
     # If user selected specific music, prefer that as the first track
     playlist_tracks = []
-    if CONFIG["music_selection"] and CONFIG["music_selection"] != "[RANDOM] Random":
+    if CONFIG["music_selection"] and CONFIG["music_selection"] not in ("[RANDOM] Random", "None"):
         music_name = CONFIG["music_selection"]
         for ext in CONFIG["music_extensions"]:
             music_file = os.path.join(CONFIG["music_folder"], f"{music_name}{ext}")
@@ -1069,6 +1074,11 @@ def select_random_music():
 def select_intro_video():
     """Select intro video - either user selection from GUI or random"""
     
+    # Return None if user selected "None" (disable intro)
+    if CONFIG["intro_selection"] == "None":
+        logger.info("Intro disabled (None selected)")
+        return None
+    
     if not os.path.exists(CONFIG["intro_folder"]):
         return None
     
@@ -1188,7 +1198,12 @@ def create_compilation_video(video_files):
     # Step 2: Create music playlist
     safe_print("\n[MUSIC] Step 2: Creating background music playlist...")
     temp_dir = tempfile.gettempdir()
-    music_playlist = create_music_playlist(temp_dir, total_video_duration)
+    # Skip music if user selected "None"
+    if MUSIC_SELECTION == "None":
+        music_playlist = None
+        safe_print("   [MUSIC] Music disabled (None selected)")
+    else:
+        music_playlist = create_music_playlist(temp_dir, total_video_duration)
     if music_playlist:
         if os.path.basename(music_playlist).startswith("music_playlist"):
             safe_print(f"   [MUSIC] Created smart playlist for {total_video_duration:.1f}s video")

@@ -291,8 +291,8 @@ Each option provides different levels of tracking and notification capabilities.
         info_window.configure(bg='white')
         
         # Set icon
-        try:
-            ico_path = os.path.join(os.path.dirname(__file__), "icons", "UOVidCompiler.ico")
+            try:
+                ico_path = os.path.join(os.path.dirname(__file__), "icons", "image.ico")
             if os.path.exists(ico_path):
                 info_window.iconbitmap(ico_path)
         except:

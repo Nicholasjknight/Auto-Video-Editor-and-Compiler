@@ -83,7 +83,7 @@ class UOVidCompilerGUI:
         # Load button icons
         self.load_button_icons()
         
-        self.root.title("B-Magic's Auto Vid Compiler - Control Panel")
+        self.root.title("Auto Video Editor & Compiler - Control Panel")
         self.root.geometry("950x920")
         self.root.minsize(900, 920)
         self.root.resizable(True, True)
@@ -104,7 +104,7 @@ class UOVidCompilerGUI:
     def set_taskbar_icon(self):
         """Set taskbar icon immediately upon window creation"""
         try:
-            ico_path = os.path.join(os.path.dirname(__file__), "icons", "UOVidCompiler.ico")
+            ico_path = os.path.join(os.path.dirname(__file__), "icons", "image.ico")
             if os.path.exists(ico_path):
                 self.root.iconbitmap(ico_path)
                 
@@ -124,14 +124,14 @@ class UOVidCompilerGUI:
     def load_png_logo(self):
         """Load PNG logo for GUI display"""
         try:
-            logo_path = os.path.join(os.path.dirname(__file__), "icons", "B-Magic's Auto Vid Compiler.png")
+            logo_path = os.path.join(os.path.dirname(__file__), "icons", "KnightLogicsVidCompiler_transparent.png")
             
             if os.path.exists(logo_path):
                 logo_image = Image.open(logo_path)
-                self.logo_large = logo_image.resize((100, 100), Image.Resampling.LANCZOS)
+                self.logo_large = logo_image.resize((150, 150), Image.Resampling.LANCZOS)
                 self.logo_large_tk = ImageTk.PhotoImage(self.logo_large)
                 
-                self.icon_small = logo_image.resize((32, 32), Image.Resampling.LANCZOS)
+                self.icon_small = logo_image.resize((48, 48), Image.Resampling.LANCZOS)
                 self.icon_tk = ImageTk.PhotoImage(self.icon_small)
                 
                 self.has_logo = True
@@ -177,7 +177,7 @@ class UOVidCompilerGUI:
     def setup_icon(self):
         """Setup application icon from ICO file"""
         try:
-            ico_path = os.path.join(os.path.dirname(__file__), "icons", "UOVidCompiler.ico")
+            ico_path = os.path.join(os.path.dirname(__file__), "icons", "image.ico")
             
             if os.path.exists(ico_path):
                 self.root.iconbitmap(ico_path)
@@ -312,52 +312,120 @@ class UOVidCompilerGUI:
         self.vid_compiler = VidCompilerTab(self.vid_compiler_frame, self)
     
     def create_header(self, parent):
-        """Create header with logo and title"""
+        """Create professional header with logo, title, and support section"""
+        # Main header frame with fixed height
         header_frame = ttk.Frame(parent, style='Header.TFrame')
         header_frame.pack(fill='x', pady=(0, 20), padx=10)
         
+        # Configure header frame to maintain consistent height
         header_frame.pack_propagate(False)
-        header_frame.configure(height=120)
+        header_frame.configure(height=140)
         
-        # Logo
+        # Left side: Logo container (centered vertically)
         logo_frame = ttk.Frame(header_frame, style='Header.TFrame')
-        logo_frame.pack(side='left', padx=(0, 15))
+        logo_frame.pack(side='left', padx=(0, 20), anchor='center')
         
+        # Logo (if available) - with error handling
         logo_displayed = False
         if hasattr(self, 'has_logo_tk') and self.has_logo_tk and hasattr(self, 'logo_large_tk'):
             try:
                 logo_label = ttk.Label(logo_frame, image=self.logo_large_tk, background=self.colors['bg'])
-                logo_label.pack(pady=10)
+                logo_label.pack(anchor='center')
                 logo_displayed = True
-                print("[OK] Header logo displayed")
+                print("[OK] Header logo displayed successfully from PNG file")
             except Exception as e:
                 print(f"[WARN] Error displaying header logo: {e}")
         
         if not logo_displayed:
+            # Fallback: Create text logo if image fails
             fallback_logo = ttk.Label(logo_frame, text="VIDEO", font=('Arial', 32), 
                                     background=self.colors['bg'], foreground=self.colors['accent'])
-            fallback_logo.pack(pady=10)
+            fallback_logo.pack()
+            print("[PACKAGE] Using fallback text logo")
         
-        # Title section
+        # Center: Title section - vertically centered
         title_frame = ttk.Frame(header_frame, style='Header.TFrame')
-        title_frame.pack(side='left', fill='both', expand=True, padx=(10, 10))
+        title_frame.pack(side='left', fill='both', expand=True, padx=(0, 20))
         
-        title_label = ttk.Label(title_frame, text="B-Magic's Auto Vid Compiler", 
-                              style='Title.TLabel', font=('Segoe UI', 16, 'bold'))
-        title_label.pack(anchor='w', pady=(25, 5))
+        # Create inner frame for vertical centering
+        title_inner = ttk.Frame(title_frame, style='Header.TFrame')
+        title_inner.pack(anchor='center', expand=True)
         
-        subtitle_label = ttk.Label(title_frame, 
-                                 text="Professional video compilation & clipping tool",
+        # Title
+        title_label = ttk.Label(title_inner, text="Auto Video Editor & Compiler", 
+                              style='Title.TLabel', font=('Segoe UI', 18, 'bold'))
+        title_label.pack(anchor='w')
+        
+        # Subtitle and version on same line
+        info_frame = ttk.Frame(title_inner, style='Header.TFrame')
+        info_frame.pack(anchor='w', pady=(3, 0))
+        
+        subtitle_label = ttk.Label(info_frame, 
+                                 text="Professional video compilation tool  •  v" + str(self.VERSION),
                                  style='Heading.TLabel', font=('Segoe UI', 9))
-        subtitle_label.pack(anchor='w', pady=(0, 2))
+        subtitle_label.pack(anchor='w')
         
-        version_label = ttk.Label(title_frame, 
-                                 text=f"v{self.VERSION}",
-                                 style='Heading.TLabel', font=('Segoe UI', 8))
-        version_label.pack(anchor='w', pady=(0, 20))
+        # Right side: Support section - vertically centered
+        support_frame = ttk.Frame(header_frame, style='Header.TFrame')
+        support_frame.pack(side='right', anchor='center', padx=(0, 5))
         
-        # Donation section
-        self.create_donation_section(header_frame)
+        # Support header
+        support_label = ttk.Label(support_frame, text="❤ Support Development", 
+                                style='Heading.TLabel', font=('Segoe UI', 10, 'bold'))
+        support_label.pack()
+        
+        # Payment buttons frame
+        buttons_frame = ttk.Frame(support_frame, style='Header.TFrame')
+        buttons_frame.pack(pady=(5, 0))
+        
+        # Payment method configurations - now with logo support
+        payment_methods = [
+            ('Venmo', 'venmo', self.colors['button'], lambda: self.open_venmo()),
+            ('PayPal', 'paypal', '#0070ba', lambda: self.open_paypal()),
+            ('Bitcoin', 'bitcoin', '#f7931a', lambda: self.copy_crypto_address('btc')),
+            ('Ethereum', 'ethereum', '#627eea', lambda: self.copy_crypto_address('eth')),
+            ('Solana', 'solana', '#14f195', lambda: self.copy_crypto_address('sol'))
+        ]
+        
+        # Create payment buttons with logos
+        for i, (name, logo_key, color, command) in enumerate(payment_methods):
+            # Check if we have a logo for this payment method
+            if hasattr(self, 'payment_logos') and logo_key in self.payment_logos:
+                # Use actual logo image with transparent button background
+                btn = tk.Button(buttons_frame, 
+                              image=self.payment_logos[logo_key],
+                              bg=self.colors['bg'],
+                              fg='white',
+                              width=36,
+                              height=36,
+                              relief='flat',
+                              borderwidth=0,
+                              cursor='hand2',
+                              command=command,
+                              activebackground=self.colors['bg'])
+                self.create_tooltip(btn, f"Donate via {name}")
+                print(f"[OK] Created {name} button with official logo")
+            else:
+                # Fallback to text/emoji if logo not available
+                fallback_icons = {
+                    'venmo': 'V', 'paypal': 'P', 'bitcoin': 'B', 
+                    'ethereum': 'E', 'solana': 'S'
+                }
+                btn = tk.Button(buttons_frame, 
+                              text=fallback_icons.get(logo_key, 'P'),
+                              font=('Segoe UI', 12, 'bold'),
+                              bg=self.colors['bg'],
+                              fg='white',
+                              width=3,
+                              height=1,
+                              relief='flat',
+                              borderwidth=0,
+                              cursor='hand2',
+                              command=command,
+                              activebackground=self.colors['bg'])
+                print(f"[WARN] Using fallback icon for {name} (logo not available)")
+            btn.pack(side='left', padx=2)
+            self.create_tooltip(btn, f"{name}: Click to {('open' if name in ['Venmo', 'PayPal'] else 'copy address')}")
     
     def create_donation_section(self, parent):
         """Create donation section (shared across tabs)"""

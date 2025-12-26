@@ -199,7 +199,7 @@ class VidCompilerTab:
         trim_frame.grid(row=0, column=0, sticky='ew', padx=(0, 10))
         
         ttk.Label(trim_frame, text="[TIME] Trim End:", style='Info.TLabel').pack(anchor='w')
-        trim_options = ['5', '10', '15', '20', '25', '30']
+        trim_options = ['None', '5', '10', '15', '20', '25', '30']
         self.trim_seconds_var.set('15')
         trim_combo = ttk.Combobox(trim_frame, textvariable=self.trim_seconds_var, 
                                 values=trim_options, state='readonly')
@@ -345,25 +345,25 @@ Ready to compile? Configure your settings above and click "Compile Videos"!
         try:
             music_dir = os.path.join(os.path.dirname(__file__), "Music")
             if not os.path.exists(music_dir):
-                return ['[RANDOM] Random']
+                return ['None', '[RANDOM] Random']
             
-            music_files = ['[RANDOM] Random']
+            music_files = ['None', '[RANDOM] Random']
             for file in os.listdir(music_dir):
                 if file.lower().endswith(('.mp3', '.wav', '.m4a', '.flac')):
                     music_files.append(os.path.splitext(file)[0])
             
-            return music_files if len(music_files) > 1 else ['[RANDOM] Random']
+            return music_files if len(music_files) > 2 else ['None', '[RANDOM] Random']
         except Exception:
-            return ['[RANDOM] Random']
+            return ['None', '[RANDOM] Random']
     
     def get_available_intros(self):
         """Get list of available intro video files"""
         try:
             intro_dir = os.path.join(os.path.dirname(__file__), "Intros")
             if not os.path.exists(intro_dir):
-                return ['StockDefault']
+                return ['None', 'StockDefault']
             
-            intro_files = []
+            intro_files = ['None']
             stock_default_found = False
             
             for file in os.listdir(intro_dir):
